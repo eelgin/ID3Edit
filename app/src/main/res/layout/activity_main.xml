@@ -10,7 +10,7 @@
         android:id="@+id/buttonEditTags"
         android:layout_width="217dp"
         android:layout_height="83dp"
-        android:onClick="openEditTags"
+        android:onClick="openFileBrowser"
         android:text="Edit Tag(s)"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
