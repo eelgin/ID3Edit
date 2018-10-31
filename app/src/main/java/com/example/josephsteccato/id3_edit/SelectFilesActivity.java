@@ -49,16 +49,28 @@ public class SelectFilesActivity extends AppCompatActivity {
         previousList();
     }
 
+    //
+    // openTagEditor
+    //      Bundle filenames and working directory to pass to next activity
+    //
     public void openTagEditor(View view){
-        Intent intent = new Intent(this, EditTagsActivity.class);
-        intent.putExtra("filesToTag", currentSelectedItems);
-        startActivity(intent);
 
+        ArrayList<String> fileNames = new ArrayList<>();
+        int i=0;
+        for (MyFile file:currentSelectedItems)
+            fileNames.add(file.getName());
+
+        Intent intent = new Intent(this, EditTagsActivity.class);
+        Bundle extras = new Bundle();
+        extras.putStringArrayList("FILE_NAMES",fileNames);
+        extras.putString("DIRECTORY",currentPath);
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
     //
     // initializeFiles:
-    //      pass a directory path to a string and view the contents in the RecyclerView
+    //      Pass a directory path to a string and view the contents in the RecyclerView
     //
     protected void initializeFiles(){
         getFileNames();

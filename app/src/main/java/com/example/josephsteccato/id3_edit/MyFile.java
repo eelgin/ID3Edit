@@ -6,7 +6,7 @@ import android.renderscript.Float2;
 import java.io.File;
 import java.text.DecimalFormat;
 
-public class MyFile {
+public class MyFile{
 
     private File thisFile;
     private String name;
