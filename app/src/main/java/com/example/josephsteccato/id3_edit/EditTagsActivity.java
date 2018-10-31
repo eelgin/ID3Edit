@@ -25,4 +25,12 @@ public class EditTagsActivity extends AppCompatActivity {
         textView.setText("DIRECTORY: " + workingDirectory);
 
     }
+
+
+    //
+    // getFileTags
+    //      collect tags for each song
+    private void getFileTags() {
+
+    }
 }

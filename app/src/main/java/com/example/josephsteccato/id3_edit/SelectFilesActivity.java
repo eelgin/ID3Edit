@@ -8,16 +8,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SelectFilesActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     MyFileAdapter adapter;
     String currentPath;
+
+    Set<String> extensions = new HashSet<String>();
 
     ArrayList<MyFile> myFileList;
     private ArrayList<MyFile> currentSelectedItems;
@@ -30,8 +35,16 @@ public class SelectFilesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_files);
 
+        extensions.add(".mp3");
+        extensions.add(".m4a");
+        extensions.add(".wav");
+        extensions.add(".ogg");
+        extensions.add(".flac");
+
+
         myFileList = new ArrayList<MyFile>();
         currentSelectedItems = new ArrayList<MyFile>();
+
         // create recyclerView for viewing files in CardViews
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -123,17 +136,42 @@ public class SelectFilesActivity extends AppCompatActivity {
     //       returns a list of files/directories in a directory
     //
     private void getFileNames() {
-        //Log.d("CONSOLE","currentPath = "+currentPath);
-
         File directory = new File(currentPath);
         File[] file_array = directory.listFiles();
 
         for (File file:file_array){
-            myFileList.add(new MyFile(file));
-            //Log.d("CONSOLE",file.getName()+": "+file.exists());
+            String name = file.getName();
+
+            // add directories
+            if (file.isDirectory())
+            {
+                myFileList.add(new MyFile(file));
+                Log.d("getFileNames()","DIRECTORY: "+name);
+            }
+            // add only audio files
+            else if (extensions.contains(getFileExtension(name))){
+                Log.d("getFileNames()","MP3_DETECTED: "+name);
+                myFileList.add(new MyFile(file));
+            }
+            // ignore the rest
+            else
+                Log.d("getFileNames()","FILE_DETECTED: "+name);
         }
         currentSelectedItems.clear();
     }
+
+    //
+    // getFileExtension:
+    //       returns the file-extension derived from the filename string
+    //
+    private String getFileExtension(String name) {
+        int lastIndexOf = name.lastIndexOf(".");
+        if (lastIndexOf == -1) {
+            return ""; // empty extension
+        }
+        return name.substring(lastIndexOf);
+    }
+
 }
 
 
