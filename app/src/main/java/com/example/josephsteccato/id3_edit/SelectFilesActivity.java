@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -15,6 +17,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.example.josephsteccato.id3_edit.R.id.mybutton;
 
 public class SelectFilesActivity extends AppCompatActivity {
 
@@ -26,6 +30,8 @@ public class SelectFilesActivity extends AppCompatActivity {
 
     ArrayList<MyFile> myFileList;
     private ArrayList<MyFile> currentSelectedItems;
+
+    private boolean outerDirectory = false;
 
     //
     // onCreate
@@ -55,21 +61,48 @@ public class SelectFilesActivity extends AppCompatActivity {
         initializeFiles();
     }
 
+    //
+    // filemenu - "edit-tags" buttons in toolbar
+    //
+    // action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.filemenu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    // handle button activities
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-    // override back-button function
+        if (id == R.id.mybutton) {
+            // do something here
+            openTagEditor();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //
+    // onBackPressed()
+    //      override back-button function
+    //
     @Override
     public void onBackPressed(){
-        previousList();
+        if(!outerDirectory){
+            outerDirectory = previousList();
+        }else{
+            super.onBackPressed();
+            outerDirectory = false;
+        }
+
     }
 
     //
     // openTagEditor
     //      Bundle filenames and working directory to pass to next activity
     //
-    public void openTagEditor(View view){
+    public void openTagEditor(){
 
         ArrayList<String> fileNames = new ArrayList<>();
-        int i=0;
         for (MyFile file:currentSelectedItems)
             fileNames.add(file.getName());
 
@@ -86,6 +119,7 @@ public class SelectFilesActivity extends AppCompatActivity {
     //      Pass a directory path to a string and view the contents in the RecyclerView
     //
     protected void initializeFiles(){
+
         getFileNames();
         adapter = new MyFileAdapter(this, myFileList, new MyFileAdapter.OnFileCheckListener() {
             @Override
@@ -107,7 +141,7 @@ public class SelectFilesActivity extends AppCompatActivity {
     //      pass a directory path to a string and view the contents in the RecyclerView
     //
     protected void openPath(String path){
-
+        outerDirectory = false;
         currentPath = currentPath.concat(path);
         myFileList.clear();
         getFileNames();
@@ -118,7 +152,8 @@ public class SelectFilesActivity extends AppCompatActivity {
     // previousList:
     //       navigate to the parent directory
     //
-    protected void previousList(){
+    protected boolean previousList(){
+        // check if outermost directory
         if(!currentPath.equals(Environment.getExternalStorageDirectory() + File.separator)) {
             String temp = currentPath.substring(0,currentPath.length()-2);
             currentPath = temp.substring(0,temp.lastIndexOf("/")).concat(File.separator);
@@ -126,8 +161,10 @@ public class SelectFilesActivity extends AppCompatActivity {
             myFileList.clear();
             getFileNames();
             adapter.notifyDataSetChanged();
+            return false;
         }else{
-            Toast.makeText(this, "Directory Limit Reached", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Directory Limit Reached\nClick back to return", Toast.LENGTH_SHORT).show();
+            return true;
         }
     }
 
@@ -136,6 +173,7 @@ public class SelectFilesActivity extends AppCompatActivity {
     //       returns a list of files/directories in a directory
     //
     private void getFileNames() {
+
         File directory = new File(currentPath);
         File[] file_array = directory.listFiles();
 

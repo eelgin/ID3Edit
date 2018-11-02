@@ -22,7 +22,7 @@ public class MyFile{
         }
 
         else{
-            this.icon = R.drawable.file;
+            this.icon = R.drawable.audio_file;
             this.size = size(thisFile.length());
         }
 
