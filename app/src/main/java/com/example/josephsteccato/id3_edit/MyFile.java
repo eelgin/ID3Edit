@@ -20,12 +20,10 @@ public class MyFile{
             this.icon = R.drawable.folder;
             this.size = "Directory";
         }
-
         else{
             this.icon = R.drawable.audio_file;
             this.size = size(thisFile.length());
         }
-
     }
 
     public String size(long size){
@@ -41,6 +39,7 @@ public class MyFile{
         }
         return hrSize;
     }
+
 
     public File getThisFile() {
         return thisFile;

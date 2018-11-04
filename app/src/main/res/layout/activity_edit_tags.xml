@@ -10,20 +10,20 @@
         android:id="@+id/editTextYear"
         android:layout_width="wrap_content"
         android:layout_height="47dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="3dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="Year"
-        android:inputType="textCapWords"
+        android:inputType="textCapWords|number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintHorizontal_bias="0.082"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextGenre" />
 
     <EditText
         android:id="@+id/editTextGenre"
-        android:layout_width="wrap_content"
-        android:layout_height="47dp"
+        android:layout_width="215dp"
+        android:layout_height="44dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
@@ -67,7 +67,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="Artist"
@@ -75,16 +74,59 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.052"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTitle" />
+
+    <EditText
+        android:id="@+id/editTextTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="Title"
+        android:inputType="textCapWords"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumber"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDirectory" />
+
+    <EditText
+        android:id="@+id/editTextNumber"
+        android:layout_width="46dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="#"
+        android:inputType="text"
+        app:layout_constraintEnd_toStartOf="@+id/textViewSlash"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDirectory" />
+
+    <EditText
+        android:id="@+id/editTextNumberBottom"
+        android:layout_width="45dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="#"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/buttonViewSongs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDirectory"
+        app:layout_constraintVertical_bias="0.012" />
 
     <TextView
         android:id="@+id/textViewDirectory"
-        android:layout_width="348dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="368dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:textSize="18sp"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +144,38 @@
         android:text="Apply Changes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.211"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextYear"
-        app:layout_constraintVertical_bias="0.506" />
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/buttonViewSongs"
+        android:layout_width="133dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="showAllSongs"
+        android:text="View Songs"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.285"
+        app:layout_constraintStart_toEndOf="@+id/buttonApplyChanges"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNumber"
+        app:layout_constraintVertical_bias="0.995" />
+
+    <TextView
+        android:id="@+id/textViewSlash"
+        android:layout_width="23dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="8dp"
+        android:text="/"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumberBottom"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDirectory"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

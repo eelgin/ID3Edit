@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -29,11 +30,32 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
     }
 
+    //
+    // openFileBrowser
+    //      On "Edit Tags" button click start next SelectFiles activity
+    //
     public void openFileBrowser(View view) {
         Intent intent = new Intent(this, SelectFilesActivity.class);
         startActivity(intent);
     }
 
+    // openSettings
+    public void openSettings(View view) {
+        // settings
+        Intent intent = new Intent(this,SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    // openAbout
+    public void openAbout(View view) {
+        // about
+        Intent intent = new Intent(this,AboutActivity.class);
+        startActivity(intent);
+    }
+
+    //
+    // checkPermissions
+    //
     public boolean checkPermissions() {
         int result;
         List<String> listPermissionsNeeded = new ArrayList<>();
@@ -50,15 +72,19 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //
+    // onRequestPermissionsResult
+    //
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == 100) {
             if ( (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED) ){
-                //Toast toast = Toast.makeText(getApplicationContext(), "ALL PERMISSIONS GRANTED", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "ALL PERMISSIONS GRANTED", Toast.LENGTH_SHORT);
+                toast.show();
             }
             else {
-                //Toast toast = Toast.makeText(getApplicationContext(), "PERMISSIONS DENIED", Toast.LENGTH_SHORT);
-                //toast.show();
+                Toast toast = Toast.makeText(getApplicationContext(), "PERMISSIONS DENIED", Toast.LENGTH_SHORT);
+                toast.show();
             }
         }
     }

@@ -28,8 +28,8 @@ public class SelectFilesActivity extends AppCompatActivity {
 
     Set<String> extensions = new HashSet<String>();
 
-    ArrayList<MyFile> myFileList;
-    private ArrayList<MyFile> currentSelectedItems;
+    ArrayList<MySongInfo> myFileList;
+    private ArrayList<MySongInfo> currentSelectedItems;
 
     private boolean outerDirectory = false;
 
@@ -48,8 +48,8 @@ public class SelectFilesActivity extends AppCompatActivity {
         extensions.add(".flac");
 
 
-        myFileList = new ArrayList<MyFile>();
-        currentSelectedItems = new ArrayList<MyFile>();
+        myFileList = new ArrayList<>();
+        currentSelectedItems = new ArrayList<>();
 
         // create recyclerView for viewing files in CardViews
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -62,21 +62,35 @@ public class SelectFilesActivity extends AppCompatActivity {
     }
 
     //
-    // filemenu - "edit-tags" buttons in toolbar
+    // onCreateOptionsMenu
+    //      "edit-tags" buttons in action-bar
     //
-    // action bar button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.filemenu,menu);
         return super.onCreateOptionsMenu(menu);
     }
-    // handle button activities
+
+    //
+    /// onOptionsItemSelected
+    //      handle action-bar button events
+    //
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.mybutton) {
-            // do something here
             openTagEditor();
+        }
+        if (id == R.id.buttonAddAll) {
+            currentSelectedItems.addAll(myFileList);
+            for(int i=0; i<myFileList.size(); ++i){
+                if(adapter.checkedItems.get(i))
+                    adapter.checkedItems.put(i,false);
+                else
+                    adapter.checkedItems.put(i, true);
+            }
+            adapter.notifyDataSetChanged();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -87,6 +101,7 @@ public class SelectFilesActivity extends AppCompatActivity {
     //
     @Override
     public void onBackPressed(){
+        myFileList.clear();
         if(!outerDirectory){
             outerDirectory = previousList();
         }else{
@@ -103,7 +118,7 @@ public class SelectFilesActivity extends AppCompatActivity {
     public void openTagEditor(){
 
         ArrayList<String> fileNames = new ArrayList<>();
-        for (MyFile file:currentSelectedItems)
+        for (MySongInfo file:currentSelectedItems)
             fileNames.add(file.getName());
 
         Intent intent = new Intent(this, EditTagsActivity.class);
@@ -123,12 +138,13 @@ public class SelectFilesActivity extends AppCompatActivity {
         getFileNames();
         adapter = new MyFileAdapter(this, myFileList, new MyFileAdapter.OnFileCheckListener() {
             @Override
-            public void onFileCheck(MyFile file) {
+            public void onFileCheck(MySongInfo file) {
                 currentSelectedItems.add(file);
                 Log.d("CONSOLE:","File checked: "+ file.getName());
             }
+
             @Override
-            public void onFileUncheck(MyFile file) {
+            public void onFileUncheck(MySongInfo file) {
                 currentSelectedItems.remove(file);
                 Log.d("CONSOLE:","File unchecked: "+ file.getName());
             }
@@ -146,6 +162,7 @@ public class SelectFilesActivity extends AppCompatActivity {
         myFileList.clear();
         getFileNames();
         adapter.notifyDataSetChanged();
+        adapter.checkedItems.clear();
     }
 
     //
@@ -161,6 +178,7 @@ public class SelectFilesActivity extends AppCompatActivity {
             myFileList.clear();
             getFileNames();
             adapter.notifyDataSetChanged();
+            adapter.checkedItems.clear();
             return false;
         }else{
             Toast.makeText(this, "Directory Limit Reached\nClick back to return", Toast.LENGTH_SHORT).show();
@@ -183,13 +201,13 @@ public class SelectFilesActivity extends AppCompatActivity {
             // add directories
             if (file.isDirectory())
             {
-                myFileList.add(new MyFile(file));
+                myFileList.add(new MySongInfo(file));
                 Log.d("getFileNames()","DIRECTORY: "+name);
             }
             // add only audio files
             else if (extensions.contains(getFileExtension(name))){
                 Log.d("getFileNames()","MP3_DETECTED: "+name);
-                myFileList.add(new MyFile(file));
+                myFileList.add(new MySongInfo(file));
             }
             // ignore the rest
             else

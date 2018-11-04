@@ -3,6 +3,8 @@
     package="com.example.josephsteccato.id3_edit">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +21,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".SelectFilesActivity" />
-        <activity android:name=".EditTagsActivity"></activity>
+        <activity android:name=".EditTagsActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

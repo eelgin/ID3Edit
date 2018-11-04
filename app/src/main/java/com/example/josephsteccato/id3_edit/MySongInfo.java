@@ -12,21 +12,23 @@ public class MySongInfo extends MyFile{
     private String songTrackNumber;
     private String songGenre;
     private String songYear;
-    private String songDiscNumber;
 
     public MySongInfo(File thisFile) {
         super(thisFile);
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(thisFile.getAbsolutePath());
-        songTitle = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-        songArtist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-        songAlbum = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
-        songAlbumArtist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
-        songTrackNumber = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
-        songGenre = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
-        songYear = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
 
-        songDiscNumber = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER);
+        if(thisFile.isFile()){
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(thisFile.getAbsolutePath());
+
+            songTitle = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            songArtist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+            songAlbum = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+            songAlbumArtist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
+            songTrackNumber = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+            songGenre = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE);
+            songYear = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_YEAR);
+        }
+
     }
 
     public String getSongTitle() {
@@ -57,9 +59,6 @@ public class MySongInfo extends MyFile{
         return songYear;
     }
 
-    public String getSongDiscNumber() {
-        return songDiscNumber;
-    }
 
 
 

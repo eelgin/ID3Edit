@@ -3,6 +3,7 @@ package com.example.josephsteccato.id3_edit;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.nfc.Tag;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -12,7 +13,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.TagException;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +38,12 @@ public class EditTagsActivity extends AppCompatActivity {
     EditText editTextAlbumArtist;
     EditText editTextGenre;
     EditText editTextYear;
+    EditText editTextTitle;
+    EditText editTextNumberTop;
+    EditText editTextNumberBottom;
+
+    String songs = "Files Selected:";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +59,10 @@ public class EditTagsActivity extends AppCompatActivity {
         editTextAlbumArtist = (EditText)findViewById(R.id.editTextAlbumArtist);
         editTextGenre = (EditText)findViewById(R.id.editTextGenre);
         editTextYear = (EditText)findViewById(R.id.editTextYear);
+        editTextTitle = (EditText)findViewById(R.id.editTextTitle);
+        editTextNumberTop = (EditText)findViewById(R.id.editTextNumber);
+        editTextNumberBottom = (EditText)findViewById(R.id.editTextNumberBottom);
+
 
         // prepare for no. of files to edit
         if(fileNames == null || fileNames.isEmpty()){
@@ -57,20 +78,50 @@ public class EditTagsActivity extends AppCompatActivity {
     }
 
     //
+    // showAllSongs
+    //      Toast containing all track names and numbers
+    //
+    public void showAllSongs(View view){
+        Toast.makeText(this, songs, Toast.LENGTH_LONG).show();
+    }
+
+    //
     // applyChanges
-    //      get values from TextEdit fields
+    //      get values from TextEdit fields and write changes to metadata
     //
     //
-    public void applyChanges(View view){
+    public void applyChanges(View view) throws TagException, ReadOnlyFileException, CannotReadException, InvalidAudioFrameException, IOException, CannotWriteException {
+        // get field values
         String newArtist = editTextArtist.getText().toString();
         String newAlbum = editTextAlbum.getText().toString();
         String newAlbumArtist = editTextAlbumArtist.getText().toString();
         String newGenre = editTextGenre.getText().toString();
         String newYear = editTextYear.getText().toString();
+        String newTitle = editTextTitle.getText().toString();
+        String newNumber = editTextNumberTop.getText().toString();
+        String newTotalNumber = editTextNumberBottom.getText().toString();
 
-        Toast.makeText(this, "NEW-INFO: "+newArtist+newAlbum+newYear+newGenre, Toast.LENGTH_LONG).show();
+        // apply changes for each file
+        for(String thisFile:fileNames){
+            AudioFile f = AudioFileIO.read(new File(workingDirectory+thisFile));
+            org.jaudiotagger.tag.Tag tag = f.getTag();
 
+            tag.setField(FieldKey.ARTIST,newArtist);
+            tag.setField(FieldKey.ALBUM,newAlbum);
+            tag.setField(FieldKey.ALBUM_ARTIST,newAlbumArtist);
+            tag.setField(FieldKey.GENRE,newGenre);
+            tag.setField(FieldKey.YEAR,newYear);
+            tag.setField(FieldKey.TRACK_TOTAL,newTotalNumber);
 
+            if (fileNames.size() == 1){
+                tag.setField(FieldKey.TITLE,newTitle);
+                tag.setField(FieldKey.TRACK,newNumber);
+            }
+            f.commit();
+        }
+        Toast.makeText(this, "Tags Updated!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     //
@@ -91,6 +142,11 @@ public class EditTagsActivity extends AppCompatActivity {
         editTextAlbumArtist.setText(mySong.getSongAlbumArtist());
         editTextGenre.setText(mySong.getSongGenre());
         editTextYear.setText(mySong.getSongYear());
+        editTextTitle.setText(mySong.getSongTitle());
+
+        String trackNumberFull[] = mySong.getSongTrackNumber().split("/");
+        editTextNumberTop.setText(trackNumberFull[0]);
+        editTextNumberBottom.setText(trackNumberFull[1]);
     }
 
     //
@@ -107,13 +163,15 @@ public class EditTagsActivity extends AppCompatActivity {
         ArrayList<String> multiAlbumArtist = new ArrayList<>();
         ArrayList<String> multiGenre = new ArrayList<>();
         ArrayList<String> multiYear = new ArrayList<>();
+        ArrayList<String> multiTitle = new ArrayList<>();
+        ArrayList<String> multiNumber = new ArrayList<>();
 
         ArrayList<MySongInfo> mySongs = new ArrayList<>();
 
         TextView textView = (TextView) findViewById(R.id.textViewDirectory);
         textView.setText("EDIT MULTIPLE FILES:\n" + workingDirectory);
 
-        // collect songinfo for each file
+        // collect song-info for each file
         for(String thisFileName:fileNames){
             File thisFile = new File(workingDirectory + thisFileName);
             MySongInfo mySong = new MySongInfo(thisFile);
@@ -124,6 +182,11 @@ public class EditTagsActivity extends AppCompatActivity {
             multiAlbumArtist.add(mySong.getSongAlbumArtist());
             multiGenre.add(mySong.getSongGenre());
             multiYear.add(mySong.getSongYear());
+            multiTitle.add(mySong.getSongTitle());
+            multiNumber.add(mySong.getSongTrackNumber());
+
+            String temp = "\n"+mySong.getSongTrackNumber()+": "+mySong.getSongTitle();
+            songs+=temp;
 
             Log.d("editMultipleFiles","ADDED: "+mySong.getSongTitle());
         }
