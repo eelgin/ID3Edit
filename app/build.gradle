@@ -18,6 +18,10 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
@@ -30,4 +34,5 @@ dependencies {
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'ch.cmbntr:modulizer-filetree:0.9.9'
     implementation files('libs/jaudiotagger-2.2.6-SNAPSHOT.jar')
+    implementation 'com.github.hendrawd:StorageUtil:1.0.0'
 }

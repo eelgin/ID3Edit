@@ -66,8 +66,10 @@ public class MyFileAdapter extends RecyclerView.Adapter<MyFileAdapter.MyFileView
 
         holder.selectBox.setChecked(checkedItems.get(position));
 
-//        if(file.getThisFile().isDirectory())
-//            holder.selectBox.setButtonDrawable(transparentDrawable);
+//        if(file.getThisFile().isDirectory()){
+//            holder.selectBox.setVisibility(View.INVISIBLE);
+//            holder.selectBox.setEnabled(false);
+//        }
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -89,11 +91,11 @@ public class MyFileAdapter extends RecyclerView.Adapter<MyFileAdapter.MyFileView
             @Override
             public void onClick(View view) {
                 if(mCtx instanceof SelectFilesActivity){
-                    if(fileList.get(position).getThisFile().isDirectory()){
-                        ((SelectFilesActivity)mCtx).openPath(fileList.get(position).getName() + File.separator);
+                    if(file.getThisFile().isDirectory()){
+                        ((SelectFilesActivity)mCtx).openPath(file.getName() + File.separator);
                     }
                     else{
-                        Toast.makeText(mCtx, fileList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mCtx, file.getName(), Toast.LENGTH_SHORT).show();
                     }
                     //Toast.makeText(mCtx, fileList.get(position).getName(), Toast.LENGTH_SHORT).show();
 

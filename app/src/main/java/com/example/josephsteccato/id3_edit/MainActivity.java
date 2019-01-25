@@ -11,8 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import hendrawd.storageutil.library.StorageUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,14 +31,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkPermissions();
+
+    }
+
+    public void openEditTags(View view){
+        openFileBrowser(0);
+    }
+
+    public void openInferTags(View view){
+        openFileBrowser(1);
     }
 
     //
     // openFileBrowser
     //      On "Edit Tags" button click start next SelectFiles activity
     //
-    public void openFileBrowser(View view) {
+    public void openFileBrowser(int editMode) {
         Intent intent = new Intent(this, SelectFilesActivity.class);
+        intent.putExtra("EDIT_MODE",editMode);
         startActivity(intent);
     }
 
@@ -88,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }
 
 

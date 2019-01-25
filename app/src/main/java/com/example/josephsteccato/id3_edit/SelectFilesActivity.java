@@ -1,5 +1,7 @@
 package com.example.josephsteccato.id3_edit;
 
+import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import hendrawd.storageutil.library.StorageUtil;
+
 import static com.example.josephsteccato.id3_edit.R.id.mybutton;
 
 public class SelectFilesActivity extends AppCompatActivity {
@@ -25,6 +29,8 @@ public class SelectFilesActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     MyFileAdapter adapter;
     String currentPath;
+
+    int editMode;
 
     Set<String> extensions = new HashSet<String>();
 
@@ -40,6 +46,9 @@ public class SelectFilesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_files);
+
+        Intent intent = getIntent();
+        editMode = intent.getIntExtra("EDIT_MODE",0);
 
         extensions.add(".mp3");
         extensions.add(".m4a");
@@ -57,7 +66,9 @@ public class SelectFilesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // set current path equal to default "Music" folder and open
-        currentPath = Environment.getExternalStorageDirectory() + File.separator + "Music" + File.separator;
+        String[] externalPaths = StorageUtil.getStorageDirectories(this);
+
+        currentPath = externalPaths[0];
         initializeFiles();
     }
 
@@ -95,6 +106,7 @@ public class SelectFilesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     //
     // onBackPressed()
     //      override back-button function
@@ -121,7 +133,12 @@ public class SelectFilesActivity extends AppCompatActivity {
         for (MySongInfo file:currentSelectedItems)
             fileNames.add(file.getName());
 
-        Intent intent = new Intent(this, EditTagsActivity.class);
+        Intent intent;
+        if(editMode==0)
+            intent = new Intent(this, EditTagsActivity.class);
+        else
+            intent = new Intent(this, InferTagsActivity.class);
+
         Bundle extras = new Bundle();
         extras.putStringArrayList("FILE_NAMES",fileNames);
         extras.putString("DIRECTORY",currentPath);
@@ -204,9 +221,9 @@ public class SelectFilesActivity extends AppCompatActivity {
                 myFileList.add(new MySongInfo(file));
                 Log.d("getFileNames()","DIRECTORY: "+name);
             }
-            // add only audio files
+            // add audio files
             else if (extensions.contains(getFileExtension(name))){
-                Log.d("getFileNames()","MP3_DETECTED: "+name);
+                Log.d("getFileNames()","AUDIO_FILE_DETECTED: "+name);
                 myFileList.add(new MySongInfo(file));
             }
             // ignore the rest
@@ -228,7 +245,11 @@ public class SelectFilesActivity extends AppCompatActivity {
         return name.substring(lastIndexOf);
     }
 
+
+
 }
+
+
 
 
 
